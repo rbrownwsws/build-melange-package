@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -n "${SIGNING_KEY:-}" && -z "${SIGNING_KEY_NAME:-}" ]]; then
+  echo "::error::You provided 'signing-key' but did not provide 'signing-key-name'" >&2
+  exit 1
+fi
+
+if [[ -n "${SIGNING_KEY_NAME:-}" && -z "${SIGNING_KEY:-}" ]]; then
+  echo "::error::You provided 'signing-key-name' but did not provide 'signing-key'" >&2
+  exit 1
+fi
+
 mkdir -p "${OUT_DIR}"
 mkdir -p "${CACHE_DIR}"
 
@@ -9,23 +19,27 @@ mkdir -p "${CACHE_DIR}"
 cp "${MELANGE_CONFIG_FILE}" "${OUT_DIR}/melange.yaml"
 
 SIGNING_ARGS=()
-if [[ "${SIGNING_KEY:-}" ]]; then
-  # Get a temporary file to store the private signing key
-  SIGNING_KEY_FILE=$(mktemp --tmpdir="${RUNNER_TEMP}" --suffix=.rsa)
+if [[ -n "${SIGNING_KEY:-}" ]]; then
+  # Get a temporary dir to store the private signing key
+  SIGNING_KEY_DIR=$(mktemp -d --tmpdir="${RUNNER_TEMP}")
+  SIGNING_KEY_FILE="${SIGNING_KEY_DIR}/${SIGNING_KEY_NAME}.rsa"
 
   # Make sure we delete the private signing key file at the end of this step
-  trap 'rm -f "${SIGNING_KEY_FILE}"' EXIT
+  trap 'rm -rf "${SIGNING_KEY_DIR}"' EXIT
 
   # Put the private signing key into a file
+  touch "${SIGNING_KEY_FILE}"
   chmod 600 "${SIGNING_KEY_FILE}"
   printf '%s' "${SIGNING_KEY}" > "${SIGNING_KEY_FILE}"
 
   # Store the public signing key in the output dir so it will be saved with
   # the rest of the build artifacts.
-  openssl rsa -in "${SIGNING_KEY_FILE}" -pubout -out "${OUT_DIR}/signing.rsa.pub"
+  openssl rsa -in "${SIGNING_KEY_FILE}" -pubout -out "${OUT_DIR}/${SIGNING_KEY_NAME}.rsa.pub"
 
   SIGNING_ARGS=("--signing-key=${SIGNING_KEY_FILE}")
 fi
+
+echo "::group::Build packages'"
 
 # Do the actual build
 melange \
@@ -35,3 +49,5 @@ melange \
   --arch="${ARCH}" \
   "${SIGNING_ARGS[@]}" \
   "${MELANGE_CONFIG_FILE}"
+
+echo "::endgroup::"

@@ -22,6 +22,10 @@ inputs:
     description: "The private key used to sign the built packages (PEM format)"
     required: false
     default: ""
+  signing-key-name:
+    description: "The name of the key used to sign the built packages (not including the .rsa/.rsa.pub suffix)"
+    required: false
+    default: ""
   package-namespace:
     description: "The distro that this package is for (wolfi, alpine3.24, etc.)"
     required: true
@@ -51,6 +55,7 @@ runs:
         OUT_DIR: "${{ inputs.out-dir }}"
         ARCH:  "${{ inputs.build-arch }}"
         SIGNING_KEY: "${{ inputs.signing-key }}"
+        SIGNING_KEY_NAME: "${{ inputs.signing-key-name }}"
         MELANGE_CONFIG_FILE: "${{ inputs.melange-config-file }}"
       run: |
         set -euo pipefail
