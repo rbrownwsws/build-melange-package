@@ -20,7 +20,8 @@ inputs:
     default: "./packages/"
   signing-key:
     description: "The private key used to sign the built packages (PEM format)"
-    required: true
+    required: false
+    default: ""
   package-namespace:
     description: "The distro that this package is for (wolfi, alpine3.24, etc.)"
     required: true
