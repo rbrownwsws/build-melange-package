@@ -39,7 +39,7 @@ if [[ -n "${SIGNING_KEY:-}" ]]; then
   SIGNING_ARGS=("--signing-key=${SIGNING_KEY_FILE}")
 fi
 
-echo "::group::Build packages'"
+echo "::group::Build packages"
 
 # Do the actual build
 melange \
