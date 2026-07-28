@@ -1,3 +1,4 @@
+# $schema=https://www.schemastore.org/github-action.json
 name: "Build single melange package"
 description: "Builds a single package using melange"
 
