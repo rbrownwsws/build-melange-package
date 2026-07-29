@@ -28,9 +28,17 @@ inputs:
     required: false
     default: ""
   package-namespace:
-    description: "The distro that this package is for (wolfi, alpine3.24, etc.)"
+    description: "namespace to use in package URLs in SBOM (eg wolfi, alpine) (default 'unknown')"
     required: true
     default: "unknown"
+  generate-index:
+    description: "generate APKINDEX.tar.gz"
+    required: false
+    default: "true"
+  generate-provenance:
+    description: "generate SLSA provenance for builds (included in a separate .attest.tar.gz file next to the APK)"
+    required: false
+    default: "true"
 
 runs:
   using: "composite"
@@ -58,6 +66,8 @@ runs:
         SIGNING_KEY: "${{ inputs.signing-key }}"
         SIGNING_KEY_NAME: "${{ inputs.signing-key-name }}"
         MELANGE_CONFIG_FILE: "${{ inputs.melange-config-file }}"
+        GENERATE_INDEX: "${{ inputs.generate-index }}"
+        GENERATE_PROVENANCE: "${{ inputs.generate-provenance }}"
       run: |
         set -euo pipefail
 

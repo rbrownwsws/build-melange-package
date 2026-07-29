@@ -57,6 +57,8 @@ melange \
   --out-dir="${OUT_DIR}" \
   --arch="${ARCH}" \
   "${SIGNING_ARGS[@]}" \
+  --generate-index="${GENERATE_INDEX}" \
+  --generate-provenance="${GENERATE_PROVENANCE}" \
   "${MELANGE_CONFIG_FILE}"
 
 echo "::endgroup::"
