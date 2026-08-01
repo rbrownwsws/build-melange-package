@@ -15,11 +15,6 @@ echo "Prepare output directories..."
 mkdir -p "${OUT_DIR}"
 mkdir -p "${CACHE_DIR}"
 
-echo "Export melange config..."
-# Copy the melange config to the output dir so it will be saved with the
-# rest of the build artifacts.
-cp "${MELANGE_CONFIG_FILE}" "${OUT_DIR}/melange.yaml"
-
 SIGNING_ARGS=()
 if [[ -n "${SIGNING_KEY:-}" ]]; then
   echo "::group::Prepare for signing"
@@ -39,11 +34,6 @@ if [[ -n "${SIGNING_KEY:-}" ]]; then
   printf '%s' "${SIGNING_KEY}" > "${SIGNING_KEY_FILE}"
 
   SIGNING_ARGS=("--signing-key=${SIGNING_KEY_FILE}")
-
-  # Store the public signing key in the output dir so it will be saved with
-  # the rest of the build artifacts.
-  echo "Export public key..."
-  openssl rsa -in "${SIGNING_KEY_FILE}" -pubout -out "${OUT_DIR}/${SIGNING_KEY_NAME}.rsa.pub"
 
   echo "::endgroup::"
 fi
