@@ -5,41 +5,29 @@ description: "Builds a single package using melange"
 inputs:
   melange-config-file:
     description: "Path to melange config file"
-    required: true
     default: "melange.yaml"
   build-arch:
     description: "The architecture(s) to build the package for (comma separated)"
-    required: true
     default: "x86_64"
   cache-dir:
     description: "The directory to store build cache files in"
-    required: true
     default: "./.cache/"
   out-dir:
     description: "The directory to output built packages into"
-    required: true
     default: "./packages/"
   signing-key:
     description: "The private key used to sign the built packages (PEM format)"
-    required: false
-    default: ""
   signing-key-name:
     description: "The name of the key used to sign the built packages (not including the .rsa/.rsa.pub suffix)"
-    required: false
-    default: ""
   package-namespace:
     description: "namespace to use in package URLs in SBOM (eg wolfi, alpine) (default 'unknown')"
-    required: true
-    default: "unknown"
   generate-index:
     description: "generate APKINDEX.tar.gz"
-    required: false
     default: "true"
   generate-provenance:
     description: "generate SLSA provenance for builds (included in a separate .attest.tar.gz file next to the APK)"
-    required: false
     default: "true"
-
+""
 runs:
   using: "composite"
 
