@@ -27,24 +27,11 @@ inputs:
   generate-provenance:
     description: "generate SLSA provenance for builds (included in a separate .attest.tar.gz file next to the APK)"
     default: "true"
-""
+
 runs:
   using: "composite"
 
   steps:
-    - name: Get package info
-      id: pkg-info
-      uses: rbrownwsws/get-melange-package-info@3bbdcad7aafc515f2aef9e26340dbeafd0fbf84b
-
-    - name: Cache - Restore build deps
-      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ inputs.cache-dir }}
-        key: ${{ steps.pkg-info.outputs.package-name }}-${{ steps.pkg-info.outputs.package-version }}-r${{ steps.pkg-info.outputs.package-epoch }}
-        restore-keys: |
-          ${{ steps.pkg-info.outputs.package-name }}-${{ steps.pkg-info.outputs.package-version }}-
-          ${{ steps.pkg-info.outputs.package-name }}-
-
     - name: Build package
       shell: bash
       env:
@@ -61,9 +48,3 @@ runs:
 
         chmod +x "${GITHUB_ACTION_PATH}/build-package.sh"
         "${GITHUB_ACTION_PATH}/build-package.sh"
-
-    - name: Cache - Save build deps
-      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ inputs.cache-dir }}
-        key: ${{ steps.pkg-info.outputs.package-name }}-${{ steps.pkg-info.outputs.package-version }}-r${{ steps.pkg-info.outputs.package-epoch }}
