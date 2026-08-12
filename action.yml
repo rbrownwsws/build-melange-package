@@ -41,6 +41,7 @@ runs:
         SIGNING_KEY: "${{ inputs.signing-key }}"
         SIGNING_KEY_NAME: "${{ inputs.signing-key-name }}"
         MELANGE_CONFIG_FILE: "${{ inputs.melange-config-file }}"
+        PACKAGE_NAMESPACE: "${{ inputs.package-namespace }}"
         GENERATE_INDEX: "${{ inputs.generate-index }}"
         GENERATE_PROVENANCE: "${{ inputs.generate-provenance }}"
       run: |

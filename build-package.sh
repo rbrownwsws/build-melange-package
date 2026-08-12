@@ -15,6 +15,11 @@ echo "Prepare output directories..."
 mkdir -p "${OUT_DIR}"
 mkdir -p "${CACHE_DIR}"
 
+NAMESPACE_ARGS=()
+if [[ -n "${PACKAGE_NAMESPACE:-}" ]]; then
+  NAMESPACE_ARGS=("--namespace=${PACKAGE_NAMESPACE}")
+fi
+
 SIGNING_ARGS=()
 if [[ -n "${SIGNING_KEY:-}" ]]; then
   echo "::group::Prepare for signing"
@@ -46,6 +51,7 @@ melange \
   --cache-dir="${CACHE_DIR}" \
   --out-dir="${OUT_DIR}" \
   --arch="${ARCH}" \
+  "${NAMESPACE_ARGS[@]}" \
   "${SIGNING_ARGS[@]}" \
   --generate-index="${GENERATE_INDEX}" \
   --generate-provenance="${GENERATE_PROVENANCE}" \
